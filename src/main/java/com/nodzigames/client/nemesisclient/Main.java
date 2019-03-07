@@ -22,6 +22,9 @@ public class Main {
 
         Draw.cls();
 
+        Draw.println("Welcome to Nemesis! The persistent, real-time hacking game. Start by registering an account");
+        Draw.println("DO NO USE REAL PASSWORDS! Your information will be revealed when another player hacks you and takes down your account. Be safe...");
+
         //Main Loop
         while (true) {
             Draw.print("/sys/nemesis> ");
