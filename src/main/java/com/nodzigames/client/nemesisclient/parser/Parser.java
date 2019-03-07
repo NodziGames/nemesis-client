@@ -35,4 +35,13 @@ public class Parser {
             return false;
         }
     }
+
+    public static boolean verifyCommandStatus(List<String> command) {
+        if (command.size() == 1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

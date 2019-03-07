@@ -8,15 +8,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nodzigames.client.nemesisclient.Main;
 import com.nodzigames.client.nemesisclient.network.requests.LoginRequest;
 import com.nodzigames.client.nemesisclient.network.requests.RegisterRequest;
+import com.nodzigames.client.nemesisclient.network.requests.ClientRequest;
+import com.nodzigames.client.nemesisclient.network.responses.ClientResponse;
 import com.nodzigames.client.nemesisclient.parser.Parser;
 import com.nodzigames.client.nemesisclient.render.Draw;
 
+import java.io.IOException;
 import java.util.List;
 
-import static com.nodzigames.client.nemesisclient.logic.Commands.C_LOGIN;
-import static com.nodzigames.client.nemesisclient.logic.Commands.C_REGISTER;
-import static com.nodzigames.client.nemesisclient.network.endpoints.Endpoints.E_LOGIN;
-import static com.nodzigames.client.nemesisclient.network.endpoints.Endpoints.E_REGISTER;
+import static com.nodzigames.client.nemesisclient.logic.Commands.*;
+import static com.nodzigames.client.nemesisclient.network.endpoints.Endpoints.*;
 
 public class Processor {
 
@@ -29,6 +30,9 @@ public class Processor {
                 break ;
             case C_LOGIN:
                 login(command);
+                break ;
+            case C_STATUS:
+                status(command);
                 break ;
                 default:
                     Draw.println("Unrecognized command! Type 'help' for a list of commands");
@@ -87,6 +91,38 @@ public class Processor {
         }
         else {
             Draw.println("Command formatted poorly. Type 'help' for instructions");
+        }
+    }
+
+    public static void status(List<String> command) throws JsonProcessingException {
+        if (Parser.verifyCommandStatus(command)) {
+            try {
+                ClientRequest requestBody = new ClientRequest(Main.username);
+
+                String body = mapper.writeValueAsString(requestBody);
+
+                HttpResponse<String> response = Unirest.post(E_RETRIEVE)
+                        .header("Content-Type", "application/json")
+                        .body(body)
+                        .asString();
+
+                if (response.getBody().equals("")) {
+                    Draw.println("Cannot retrieve status, please log in first!");
+                }
+                else {
+                    try {
+                        ClientResponse clientResponse = mapper.readValue(response.getBody(), ClientResponse.class);
+                        Draw.println("UserName: " + clientResponse.getUsername());
+                        Draw.println("Firewall Level: " + clientResponse.getFirewallLevel());
+                        Draw.println("Data: " + clientResponse.getData() + " KB");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
