@@ -4,4 +4,5 @@ public class Commands {
     public static final String C_LOGIN = "login";
     public static final String C_REGISTER = "register";
     public static final String C_STATUS = "status";
+    public static final String C_LIST = "list";
 }

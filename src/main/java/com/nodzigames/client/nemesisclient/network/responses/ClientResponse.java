@@ -32,4 +32,11 @@ public class ClientResponse {
     public void setData(long data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "Username -> " + this.username + "\n" +
+                "Data -> " + this.data + " KB" + "\n" +
+                "Firewall Level -> " + this.firewallLevel;
+    }
 }

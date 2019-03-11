@@ -1,6 +1,7 @@
 package com.nodzigames.client.nemesisclient.logic;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -30,6 +31,9 @@ public class Processor {
                 break ;
             case C_LOGIN:
                 login(command);
+                break ;
+            case C_LIST:
+                list(command);
                 break ;
             case C_STATUS:
                 status(command);
@@ -123,6 +127,43 @@ public class Processor {
             } catch (UnirestException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static void list(List<String> command) {
+        if (Parser.verifyCommandList(command)) {
+            try {
+                HttpResponse<String> response = Unirest.get(E_ALL)
+                        .header("Content-Type", "application/json")
+                        .asString();
+                try {
+                    List<ClientResponse> clients = mapper.readValue(response.getBody(), new TypeReference<List<ClientResponse>>(){});
+
+                    //Check if you passed in an amount of lines, otherwise it defaults to 10
+                    int displayCount = 10;
+                    if (command.size() == 2) {
+                        displayCount = Integer.parseInt(command.get(1));
+                    }
+
+                    Draw.println("");
+
+                    for (int i = 0; i < displayCount; i++) {
+                        if (i >= clients.size()) {
+                            break ;
+                        }
+                        if (clients.get(i) != null) {
+                            Draw.println(clients.get(i).toString() + "\n");
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            Draw.println("Command formatted poorly. Type 'help' for instructions");
         }
     }
 }
