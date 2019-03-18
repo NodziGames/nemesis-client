@@ -8,4 +8,6 @@ public class Endpoints {
     public static final String E_LOGIN = E_BASEURL + "/client/login";
     public static final String E_RETRIEVE = E_BASEURL + "/client/retrieve";
     public static final String E_ALL = E_BASEURL + "/client/all";
+
+    public static final String E_TIME = E_BASEURL + "/system/time";
 }

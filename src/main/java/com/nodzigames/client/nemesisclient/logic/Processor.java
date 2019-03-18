@@ -12,9 +12,11 @@ import com.nodzigames.client.nemesisclient.network.requests.RegisterRequest;
 import com.nodzigames.client.nemesisclient.network.requests.ClientRequest;
 import com.nodzigames.client.nemesisclient.network.responses.ClientResponse;
 import com.nodzigames.client.nemesisclient.parser.Parser;
+import com.nodzigames.client.nemesisclient.parser.Timer;
 import com.nodzigames.client.nemesisclient.render.Draw;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import static com.nodzigames.client.nemesisclient.logic.Commands.*;
@@ -34,6 +36,15 @@ public class Processor {
                 break ;
             case C_LIST:
                 list(command);
+                break ;
+            case C_TIME:
+                time(command);
+                break ;
+            case C_CLEAR:
+                clear(command);
+                break ;
+            case C_LOGOUT:
+                logout(command);
                 break ;
             case C_STATUS:
                 status(command);
@@ -90,7 +101,7 @@ public class Processor {
                 }
             }
             else {
-                Draw.println("You are already logged in to an account");
+                Draw.println("You are already logged in to an account. Please logout first!");
             }
         }
         else {
@@ -99,7 +110,7 @@ public class Processor {
     }
 
     public static void status(List<String> command) throws JsonProcessingException {
-        if (Parser.verifyCommandStatus(command)) {
+        if (Parser.verifyCommandNoArgs(command)) {
             try {
                 ClientRequest requestBody = new ClientRequest(Main.username);
 
@@ -116,9 +127,7 @@ public class Processor {
                 else {
                     try {
                         ClientResponse clientResponse = mapper.readValue(response.getBody(), ClientResponse.class);
-                        Draw.println("UserName: " + clientResponse.getUsername());
-                        Draw.println("Firewall Level: " + clientResponse.getFirewallLevel());
-                        Draw.println("Data: " + clientResponse.getData() + " KB");
+                        Draw.println(clientResponse.toString());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -145,14 +154,14 @@ public class Processor {
                         displayCount = Integer.parseInt(command.get(1));
                     }
 
-                    Draw.println("");
+                    Draw.println("Listing first " + displayCount + " users...\n");
 
                     for (int i = 0; i < displayCount; i++) {
                         if (i >= clients.size()) {
                             break ;
                         }
                         if (clients.get(i) != null) {
-                            Draw.println(clients.get(i).toString() + "\n");
+                            Draw.println(clients.get(i).briefToString());
                         }
                     }
                 } catch (IOException e) {
@@ -160,6 +169,52 @@ public class Processor {
                 }
             } catch (UnirestException e) {
                 e.printStackTrace();
+            }
+        }
+        else {
+            Draw.println("Command formatted poorly. Type 'help' for instructions");
+        }
+    }
+
+    public static void time(List<String> command) {
+        if (Parser.verifyCommandNoArgs(command)) {
+            try {
+                HttpResponse<String> response = Unirest.get(E_TIME)
+                        .header("Content-Type", "application/json")
+                        .asString();
+
+                Date date = new Date(Long.parseLong(response.getBody()));
+
+                Draw.println("Server Time (GMT+2): " + Timer.toString(date));
+
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            Draw.println("Command formatted poorly. Type 'help' for instructions");
+        }
+    }
+
+    public static void clear(List<String> command) {
+        if (Parser.verifyCommandNoArgs(command)) {
+            Draw.cls();
+        }
+        else {
+            Draw.println("Command formatted poorly. Type 'help' for instructions");
+        }
+    }
+
+    public static void logout(List<String> command) {
+        if (Parser.verifyCommandNoArgs(command)) {
+
+            if (Main.username == null) {
+                Draw.println("No account logged in currently...");
+            }
+            else {
+                Main.username = null;
+                Main.token = null;
+                Draw.println("You've logged out successfully");
             }
         }
         else {

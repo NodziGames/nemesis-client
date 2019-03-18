@@ -6,6 +6,7 @@ public class ClientResponse {
     private String username;
     private int firewallLevel;
     private long data;
+    private long dataFarms;
 
 
 
@@ -37,6 +38,20 @@ public class ClientResponse {
     public String toString() {
         return "Username -> " + this.username + "\n" +
                 "Data -> " + this.data + " KB" + "\n" +
-                "Firewall Level -> " + this.firewallLevel;
+                "Firewall Level -> " + this.firewallLevel + "\n" +
+                "Data Farms -> " + this.dataFarms + "x (" + this.dataFarms + "KB/m)";
+    }
+
+    //Used to list accounts
+    public String briefToString() {
+        return this.username + ": Lvl -> " + this.firewallLevel + ": Data -> " + this.data + " KB";
+    }
+
+    public long getDataFarms() {
+        return dataFarms;
+    }
+
+    public void setDataFarms(long dataFarms) {
+        this.dataFarms = dataFarms;
     }
 }

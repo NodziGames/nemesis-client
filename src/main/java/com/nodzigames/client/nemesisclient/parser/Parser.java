@@ -38,15 +38,6 @@ public class Parser {
         }
     }
 
-    public static boolean verifyCommandStatus(List<String> command) {
-        if (command.size() == 1) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
     public static boolean verifyCommandList(List<String> command) {
         if (command.size() == 1) {
             return true;
@@ -63,6 +54,15 @@ public class Parser {
                 Draw.println("The number entered is not an integer");
                 return false;
             }
+        }
+        else {
+            return false;
+        }
+    }
+
+    public static boolean verifyCommandNoArgs(List<String> command) {
+        if (command.size() == 1) {
+            return true;
         }
         else {
             return false;
