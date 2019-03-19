@@ -11,6 +11,7 @@ import com.nodzigames.client.nemesisclient.network.requests.LoginRequest;
 import com.nodzigames.client.nemesisclient.network.requests.RegisterRequest;
 import com.nodzigames.client.nemesisclient.network.requests.ClientRequest;
 import com.nodzigames.client.nemesisclient.network.responses.ClientResponse;
+import com.nodzigames.client.nemesisclient.network.responses.PoolResponse;
 import com.nodzigames.client.nemesisclient.parser.Parser;
 import com.nodzigames.client.nemesisclient.parser.Timer;
 import com.nodzigames.client.nemesisclient.render.Draw;
@@ -45,6 +46,9 @@ public class Processor {
                 break ;
             case C_LOGOUT:
                 logout(command);
+                break ;
+            case C_POOLS:
+                pools(command);
                 break ;
             case C_STATUS:
                 status(command);
@@ -173,6 +177,30 @@ public class Processor {
         }
         else {
             Draw.println("Command formatted poorly. Type 'help' for instructions");
+        }
+    }
+
+    public static void pools(List<String> command) {
+        if (Parser.verifyCommandNoArgs(command)) {
+            try {
+                HttpResponse<String> response = Unirest.get(E_POOLS)
+                        .header("Content-Type", "application/json")
+                        .asString();
+
+                try {
+                    List<PoolResponse> pools = mapper.readValue(response.getBody(), new TypeReference<List<PoolResponse>>(){});
+
+                    for (int i = 0; i < 5; i++) {
+                        Draw.println(pools.get(i).getName());
+                        Draw.println("Complexity = " + pools.get(i).getDifficulty());
+                        Draw.println("Bounty: " + pools.get(i).getBounty() + "KB.   Max reward = " + (pools.get(i).getBounty() / 10) + "KB (10%)" + "\n");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
         }
     }
 

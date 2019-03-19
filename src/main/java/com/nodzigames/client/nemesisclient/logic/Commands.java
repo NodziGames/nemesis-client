@@ -8,4 +8,5 @@ public class Commands {
     public static final String C_TIME = "time";
     public static final String C_CLEAR = "clear";
     public static final String C_LOGOUT = "logout";
+    public static final String C_POOLS = "pools";
 }
