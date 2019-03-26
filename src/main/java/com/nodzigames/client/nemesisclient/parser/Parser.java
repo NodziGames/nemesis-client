@@ -68,4 +68,24 @@ public class Parser {
             return false;
         }
     }
+
+    public static boolean verifyCommandConnect(List<String> command) {
+        if (command.size() != 2) {
+            return false;
+        }
+
+        try {
+            Integer.parseInt(command.get(1));
+
+            if (Integer.parseInt(command.get(1)) < 0 || Integer.parseInt(command.get(1)) > 4) {
+                Draw.println("Pool Index out of range!");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            Draw.println("The number entered is not an integer");
+            return false;
+        }
+
+        return true;
+    }
 }

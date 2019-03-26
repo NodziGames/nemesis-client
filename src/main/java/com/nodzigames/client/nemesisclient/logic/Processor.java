@@ -50,6 +50,9 @@ public class Processor {
             case C_POOLS:
                 pools(command);
                 break ;
+            case C_CONNECT:
+                connect(command);
+                break ;
             case C_STATUS:
                 status(command);
                 break ;
@@ -193,7 +196,8 @@ public class Processor {
                     for (int i = 0; i < 5; i++) {
                         Draw.println(pools.get(i).getName());
                         Draw.println("Complexity = " + pools.get(i).getDifficulty());
-                        Draw.println("Bounty: " + pools.get(i).getBounty() + "KB.   Max reward = " + (pools.get(i).getBounty() / 10) + "KB (10%)" + "\n");
+                        Draw.println("Bounty: " + pools.get(i).getBounty() + "kb.   Max reward = " + Math.round(pools.get(i).getBounty() * 0.05) + "kb (5%)");
+                        Draw.println("Connection Index: " + i + "\n");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -244,6 +248,15 @@ public class Processor {
                 Main.token = null;
                 Draw.println("You've logged out successfully");
             }
+        }
+        else {
+            Draw.println("Command formatted poorly. Type 'help' for instructions");
+        }
+    }
+
+    public static void connect(List<String> command) {
+        if (Parser.verifyCommandConnect(command)) {
+
         }
         else {
             Draw.println("Command formatted poorly. Type 'help' for instructions");

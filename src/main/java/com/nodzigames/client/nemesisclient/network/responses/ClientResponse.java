@@ -37,14 +37,14 @@ public class ClientResponse {
     @Override
     public String toString() {
         return "Username -> " + this.username + "\n" +
-                "Data -> " + this.data + " KB" + "\n" +
+                "Data -> " + this.data + "kb" + "\n" +
                 "Firewall Level -> " + this.firewallLevel + "\n" +
-                "Data Farms -> " + this.dataFarms + "x (" + this.dataFarms + "KB/m)";
+                "Data Farms -> " + this.dataFarms + "x (" + this.dataFarms + "kb/m)";
     }
 
     //Used to list accounts
     public String briefToString() {
-        return this.username + ": Lvl -> " + this.firewallLevel + ": Data -> " + this.data + " KB";
+        return this.username + ": Lvl -> " + this.firewallLevel + ": Data -> " + this.data + "kb";
     }
 
     public long getDataFarms() {
