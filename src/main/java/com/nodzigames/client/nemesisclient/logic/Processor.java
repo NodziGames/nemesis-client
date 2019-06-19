@@ -7,6 +7,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nodzigames.client.nemesisclient.Main;
+import com.nodzigames.client.nemesisclient.network.requests.BuyRequest;
 import com.nodzigames.client.nemesisclient.network.requests.LoginRequest;
 import com.nodzigames.client.nemesisclient.network.requests.RegisterRequest;
 import com.nodzigames.client.nemesisclient.network.requests.ClientRequest;
@@ -53,8 +54,14 @@ public class Processor {
             case C_CONNECT:
                 connect(command);
                 break ;
+            case C_MARKET:
+                market(command);
+                break ;
             case C_STATUS:
                 status(command);
+                break ;
+            case C_BUY:
+                buy(command);
                 break ;
                 default:
                     Draw.println("Unrecognized command! Type 'help' for a list of commands");
@@ -256,7 +263,65 @@ public class Processor {
 
     public static void connect(List<String> command) {
         if (Parser.verifyCommandConnect(command)) {
+            //Lacking implementation currently...
+        }
+        else {
+            Draw.println("Command formatted poorly. Type 'help' for instructions");
+        }
+    }
 
+    public static void market(List<String> command) throws JsonProcessingException {
+        if (Parser.verifyCommandNoArgs(command)) {
+            try {
+                ClientRequest requestBody = new ClientRequest(Main.username);
+
+                String body = mapper.writeValueAsString(requestBody);
+
+                HttpResponse<String> response = Unirest.post(E_RETRIEVE)
+                        .header("Content-Type", "application/json")
+                        .body(body)
+                        .asString();
+
+                if (response.getBody().equals("")) {
+                    Draw.println("Cannot retrieve status, please log in first!");
+                }
+                else {
+                    try {
+                        ClientResponse clientResponse = mapper.readValue(response.getBody(), ClientResponse.class);
+
+                        //Draw market stuff
+                        Draw.println("Listing (1) -> Data Farm - Mines 1KB of data per minute: $" + (clientResponse.getDataFarms() * 100));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            Draw.println("Command formatted poorly. Type 'help' for instructions");
+        }
+    }
+
+    public static void buy(List<String> command) throws JsonProcessingException  {
+        if (Parser.verifyCommandBuy(command)) {
+
+            BuyRequest requestBody = new BuyRequest(Main.token, Integer.parseInt(command.get(1)), Integer.parseInt(command.get(2)));
+
+            String body = mapper.writeValueAsString(requestBody);
+
+            try {
+                HttpResponse<String> response = Unirest.post(E_BUY)
+                        .header("Content-Type", "application/json")
+                        .body(body)
+                        .asString();
+
+                Draw.println(response.getBody());
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
         }
         else {
             Draw.println("Command formatted poorly. Type 'help' for instructions");

@@ -88,4 +88,20 @@ public class Parser {
 
         return true;
     }
+
+    public static boolean verifyCommandBuy(List<String> command) {
+        if (command.size() != 3) {
+            return false;
+        }
+
+        try {
+            Integer.parseInt(command.get(1));
+            Integer.parseInt(command.get(2));
+        } catch (NumberFormatException e) {
+            Draw.println("Numbers provided are not integers");
+            return false;
+        }
+
+        return true;
+    }
 }

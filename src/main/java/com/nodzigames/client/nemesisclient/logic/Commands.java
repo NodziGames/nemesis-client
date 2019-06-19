@@ -10,4 +10,6 @@ public class Commands {
     public static final String C_LOGOUT = "logout";
     public static final String C_POOLS = "pools";
     public static final String C_CONNECT = "connect";
+    public static final String C_MARKET = "market";
+    public static final String C_BUY = "buy";
 }

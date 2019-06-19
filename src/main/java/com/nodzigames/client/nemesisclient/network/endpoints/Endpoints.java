@@ -15,4 +15,7 @@ public class Endpoints {
 
     //Pool calls
     public static final String E_POOLS = E_BASEURL + "/pool/all";
+
+    //Market Calls
+    public static final String E_BUY = E_BASEURL + "/market/buy";
 }
